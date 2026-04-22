@@ -1,0 +1,48 @@
+using UnityEngine;
+
+public class BowSystem : MonoBehaviour
+{
+    [Header("Ссылки")]
+    public Camera cam;
+    public GameObject arrowPrefab; // мой префаб стрелы
+    public Transform firePoint;
+
+    [Header("Настройки")]
+    public float shootForce = 30f;
+
+    private Animator anim;
+
+    void Start()
+    {
+        anim = GetComponent<Animator>();
+    }
+
+    void Update()
+    {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            Shoot();
+        }
+    }
+
+    void Shoot()
+    {
+        // запуск анимации
+        if (anim != null)
+        {
+            anim.SetTrigger("isShooting");
+        }
+
+        // Логика вылета стрелы
+        if (arrowPrefab != null && firePoint != null)
+        {
+            GameObject arrow = Instantiate(arrowPrefab, firePoint.position, firePoint.rotation);
+            Rigidbody rb = arrow.GetComponent<Rigidbody>();
+
+            if (rb != null)
+            {
+                rb.AddForce(cam.transform.forward * shootForce, ForceMode.Impulse);
+            }
+        }
+    }
+}
